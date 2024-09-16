@@ -1,6 +1,7 @@
 const express = require ('express');
 const router = express.Router();
+const {fetchProductsFromDummyJson } = require('../models/productModel');
 
-router.get('/', (req, res) => res.send('Products route is working'));
+//router.get('/', fetchProductsFromDummyJson);
 
 module.exports = router;
