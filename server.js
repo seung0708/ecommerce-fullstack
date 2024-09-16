@@ -17,9 +17,9 @@ app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/products', productRoutes);
 app.use('/seller', sellerRoutes);
-app.use('/cart', cartRoutes);
-app.use('/order', orderRoutes);
-app.use('/payment', paymentRoutes);
+app.use('/carts', cartRoutes);
+app.use('/orders', orderRoutes);
+app.use('/payments', paymentRoutes);
 
 
 //Configure session
