@@ -40,6 +40,7 @@ router.get('/logout', (req, res) => {
     req.logout();
     res.redirect('/');
 })
+
 router.post('/register', async (req, res) => {
     let registeredUser;
     const role = req.role;
@@ -50,7 +51,11 @@ router.post('/register', async (req, res) => {
     } else {
         res.status(400).json({error: 'Invalid role specified'});
     }
-    console.log(user)
+    if(user) {
+        res.status(201).json({
+            msg: 'Register successful'
+        })
+    }
 });
 
 router.post('/login', login);

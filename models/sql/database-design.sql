@@ -111,6 +111,12 @@ CREATE TABLE "payment_details" (
   "updated_at" timestamp
 );
 
+CREATE TABLE session (
+    sid VARCHAR PRIMARY KEY,
+    sess JSON NOT NULL,
+    expire TIMESTAMP NOT NULL
+);
+
 COMMENT ON COLUMN "users"."users_type" IS 'sellers or users';
 
 ALTER TABLE "sellers" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");

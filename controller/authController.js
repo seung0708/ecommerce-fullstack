@@ -9,7 +9,7 @@ const register = async(req, res, role) => {
         let userId; 
         let userExists = await findUserByEmail(email);
         //if user doesn't exist
-        if(!userExists.rows[0]?.email) {
+        if(!userExists?.email) {
             const hashedPassword = await bcrypt.hash(password, 10);
             user = await createUser(first_name, last_name, email, hashedPassword, created_at);
             userId = user.rows[0].id;

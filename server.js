@@ -2,11 +2,15 @@ require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const PostgreSQLStore = require('connect-pg-simple')(session);
+const pool = require('./models/database');
+const session = require('express-session');
+
 const appSeller = express();
 const appCustomer = express();
 const CUSTOMER_PORT = process.env.CUSTOMER_PORT || 5000; 
 const SELLER_PORT = process.env.SELLER_PORT || 5001;
-const session = require('express-session');
+
 //Setting up Routes
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
@@ -23,6 +27,10 @@ const setUpApp = (app, role) => {
     app.use(bodyParser.json());
     //Configure session
     app.use(session({
+        store: new PostgreSQLStore({
+            pool, 
+            tableName: 'session'
+        }),
         secret: process.env.SECRET_KEY, 
         resave: false, 
         saveUninitialized: false, 
