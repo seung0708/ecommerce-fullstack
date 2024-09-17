@@ -14,7 +14,7 @@ const fetchProductCategory = async (req, res) => {
     const response = await fetch(`https://dummyjson.com/products/category/${category}`)
     
     const products = await response.json();
-    console.log(products.products[0])
+    console.log(products.products)
 }
 
 //Getting all categories from dummyjson
@@ -28,4 +28,4 @@ router.get('/products', fetchProductsFromDummyJson)
 router.get('/products/category-list', fetchCategoriesFromDummyJson);
 router.get('/products/category/:category', fetchProductCategory)
 
-module.exports = router;
+module.exports = router; 

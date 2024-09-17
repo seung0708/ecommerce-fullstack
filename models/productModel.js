@@ -5,7 +5,13 @@ const createProduct = async (name, description, price, quantity) => {
 }
 
 const getAllProducts = async () => {
-    return pool.query('SELECT name, price, description')
+    try {
+        const result = await pool.query('SELECT name, price, description, images FROM products');
+        return result.rows;
+    } catch(error) {
+        console.error('Error in getAllProducts controller:', error);
+        res.status(500).json({ error: 'Database query failed' });
+    }
 }
 
-module.exports = {};
+module.exports = {getAllProducts};
