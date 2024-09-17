@@ -9,3 +9,8 @@ CREATE TABLE users(
   user_type type,
   created_at TIMESTAMP 
  );
+
+
+DELETE FROM users;
+ALTER TABLE users 
+ALTER COLUMN id RESTART WITH 1;

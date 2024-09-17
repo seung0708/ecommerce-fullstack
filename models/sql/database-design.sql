@@ -4,7 +4,6 @@ CREATE TABLE "users" (
   "last_name" varchar NOT NULL,
   "email" varchar UNIQUE NOT NULL,
   "password" varchar NOT NULL,
-  "users_type" varchar,
   "created_at" datetime
 );
 
@@ -14,6 +13,18 @@ CREATE TABLE "sellers" (
   "store_name" varchar,
   "created_at" datetime
 );
+
+
+CREATE TABLE user_roles (
+	user_id INTEGER REFERENCES users(id), 
+  role_id INTEGER REFERENCES roles(id),
+  PRIMARY KEY (user_id, role_id)
+);
+CREATE TABLE roles (
+	id INTEGER PRIMARY KEY,
+  name VARCHAR(50)
+);
+
 
 CREATE TABLE "categories" (
   "id" integer PRIMARY KEY,

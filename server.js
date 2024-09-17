@@ -1,20 +1,12 @@
 require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
-const app = express();
-const PORT = process.env.PORT || 5000; 
+const cors = require('cors');
+const appSeller = express();
+const appCustomer = express();
+const CUSTOMER_PORT = process.env.CUSTOMER_PORT || 5000; 
+const SELLER_PORT = process.env.SELLER_PORT || 5001;
 const session = require('express-session');
-
-app.use(bodyParser.json());
-
-//Configure session
-app.use(session({
-    secret: process.env.SECRET_KEY, 
-    resave: false, 
-    saveUninitialized: false, 
-    cookie: {secure: true , maxAge: 1000 * 60 * 60 * 24}
-}))
-
 //Setting up Routes
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
@@ -26,16 +18,35 @@ const paymentRoutes = require('./routes/payments');
 const categoryRoutes = require('./routes/categories');
 const dummyjsonRoutes = require('./routes/dummyjson');
 
-app.use('/auth', authRoutes);
-app.use('/users', userRoutes);
-app.use('/products', productRoutes);
-app.use('/seller', sellerRoutes);
-app.use('/carts', cartRoutes);
-app.use('/orders', orderRoutes);
-app.use('/payments', paymentRoutes);
-app.use('/categories', categoryRoutes);
-app.use('/dummyjson', dummyjsonRoutes);
+const setUpApp = (app, role) => {
+    app.use(cors());
+    app.use(bodyParser.json());
+    //Configure session
+    app.use(session({
+        secret: process.env.SECRET_KEY, 
+        resave: false, 
+        saveUninitialized: false, 
+        cookie: {secure: true , maxAge: 1000 * 60 * 60 * 24} 
+    }))
+    app.use((req, res, next) => {
+        req.role = role; 
+        next();
+    })
+    app.use('/auth', authRoutes);
+    app.use('/users', userRoutes);
+    app.use('/products', productRoutes);
+    app.use('/seller', sellerRoutes);
+    app.use('/carts', cartRoutes);
+    app.use('/orders', orderRoutes);
+    app.use('/payments', paymentRoutes);
+    app.use('/categories', categoryRoutes);
+    app.use('/dummyjson', dummyjsonRoutes);
+}
+
+setUpApp(appCustomer, 'customer');
+setUpApp(appSeller, 'seller');
 
 
-app.listen(PORT, () => console.log(`Server is running on http://locatlhost:${PORT}`))
+appCustomer.listen(CUSTOMER_PORT, () => console.log(`Server is running on http://localhost:${CUSTOMER_PORT}`))
+appSeller.listen(SELLER_PORT, () => console.log(`Server is running on http://localhost:${SELLER_PORT}`))
 
