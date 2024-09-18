@@ -23,7 +23,7 @@ const orderRoutes = require('./routes/orders');
 const paymentRoutes = require('./routes/payments');
 const categoryRoutes = require('./routes/categories');
 const dummyjsonRoutes = require('./routes/dummyjson');
-
+const cartItemRoutes = require('./routes/cartItems');
 
 
 
@@ -60,6 +60,7 @@ const setUpApp = (app, role) => {
     app.use('/payments', paymentRoutes);
     app.use('/categories', categoryRoutes);
     app.use('/dummyjson', dummyjsonRoutes);
+    app.use('/cartItems', cartItemRoutes);
 }
 
 
