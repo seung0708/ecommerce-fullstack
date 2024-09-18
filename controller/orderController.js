@@ -1,21 +1,31 @@
-const {createOrderInDB, getOrderByIdInDB} = require('../models/orderModel');
+const addOrderItems = require('../models/orderItemsModel');
+const {createOrderInDB, getOrderByIdInDB, getOrderTotal} = require('../models/orderModel');
 
-const createOrder = async(req, res) => {
-    const userId = req.body.id;
-    const {cartId, payment_method_id} = req.body; 
+const createOrder = async (req, res) => {
+    console.log(req.body);
+    const {user_id, cart_id} = req.body;
     try {
-        const order = await createOrderInDB(userId, cartId, payment_method_id);
-        res.status(201).json({order});
+        const totalAmount = await getOrderTotal(user_id); 
+
+        const orderId = await createOrderInDB(user_id, cart_id, totalAmount);
+        
+        if (orderId) {
+            await addOrderItems(cart_id, orderId);
+            res.status(201).json({ message: 'Order created successfully', orderId });
+        } else {
+            res.status(400).json({ error: 'Failed to create order' });
+        }
     } catch (error) {
-        res.status(500).JSON({error: 'Failed to create order'});
+        console.error('Error in createOrder:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
-}
+};
 
 const getOrderById = async (req, res) => {
     const orderId = req.params.orderId;
     try {
         const order = await getOrderByIdInDB(orderId);
-        res.status(200).JSON({order})
+        res.status(201).json({order})
     } catch(error) {
         res.status(500).json({error: 'Failed to retrieve order'});
     }

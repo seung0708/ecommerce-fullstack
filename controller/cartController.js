@@ -21,15 +21,14 @@ const addToCart = async (req, res) => {
 }
 
 const getCartByUserId = async(req, res) => {
-    const userId = req.user.id;
+    const userId = req.params.userId;
+    console.log(req.params, userId)
     try {
         const cart = await findCartByUserId(userId);
-
         if(!cart) {
-            return res.status(404).json({message: 'No cart round for this user'});
+            return res.status(404).json({message: 'No cart found for this user'});
         }
-
-        const cartItems = await get
+        res.status(201).json({message: `Cart ID ${cart}`})
     } catch (error) {
         res.status(500).json({error: 'Failed to fetch cart for user'});
     }
