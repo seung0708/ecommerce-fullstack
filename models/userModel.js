@@ -14,9 +14,10 @@ const findUserByEmail = async (email) => {
     return result.rows[0]
 }
 
-const getIdByEmail = async (email) => {
-    return pool.query('SELECT id FROM users WHERE email = $1', [email]);
-}
+async function findUserById(id) {
+    return await pool.query('SELECT * FROM users WHERE id = $1', [id]);
+    
+  }
 
 const addToUserRoles = async (userId, roleId) => {
     return pool.query('INSERT INTO user_roles (user_id, role_id) VALUES($1, $2)', [userId, roleId]);
@@ -29,5 +30,5 @@ module.exports = {
     getRole, 
     addToUserRoles,
     findUserByEmail,
-    getIdByEmail
+    findUserById
 }

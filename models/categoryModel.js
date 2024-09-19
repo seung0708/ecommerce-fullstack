@@ -7,4 +7,12 @@ const fetchCategoriesFromDummyJson = async () => {
     console.log(categories);
 }
 
-module.exports = {fetchCategoriesFromDummyJson};
+const fetchCategoriesById = async (name) => {
+    const result = await pool.query('SELECT id FROM categories WHERE name = $1', [name]);
+    return result.rows[0].id;
+}
+
+module.exports = {
+    fetchCategoriesFromDummyJson,
+    fetchCategoriesById
+};

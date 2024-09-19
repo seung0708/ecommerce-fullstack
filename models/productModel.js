@@ -1,7 +1,7 @@
 const pool = require('./database');
 
-const createProduct = async (name, description, price, quantity) => {
-
+const createProduct = async (name, seller_id, price, categoryId, description, quantity, images) => {
+    console.log(name, seller_id, price, categoryId, description, quantity, images)
 }
 
 const getAllProducts = async () => {

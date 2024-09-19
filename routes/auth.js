@@ -1,4 +1,4 @@
-const {findUserByEmail} = require ('../models/userModel');
+const {findUserByEmail, findUserById} = require ('../models/userModel');
 const {register, login} = require('../controller/authController');
 const express = require ('express');
 const router = express.Router();
@@ -38,7 +38,6 @@ router.get('/logout', (req, res) => {
 
 router.post('/register', async (req, res) => {
     const role = req.body.role;
-    console.log(role)
     try {
         if (role !== 'seller' && role !== 'customer') {
             return res.status(400).json({ error: 'Invalid role specified' });

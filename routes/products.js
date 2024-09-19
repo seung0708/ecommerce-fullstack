@@ -1,10 +1,11 @@
 const express = require ('express');
 const router = express.Router();
-const {fetchAllProducts} = require('../controller/productController');
+const {fetchAllProducts, addProduct} = require('../controller/productController');
+const {isAuthenticated, isSeller} = require('../routes/middleware');
 
 //Products displayed on customer site
 router.get('/', fetchAllProducts)
 
-//router.post('/', addProduct)
+router.post('/',isAuthenticated, isSeller, addProduct)
 
 module.exports = router;
