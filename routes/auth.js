@@ -30,13 +30,15 @@ passport.deserializeUser(async (id, done) => {
 
 router.get('/', (req, res) => res.send('Auth route is working'));
 
+
 router.get('/logout', (req, res) => {
     req.logout();
     res.redirect('/');
 })
 
 router.post('/register', async (req, res) => {
-    const role = req.role;
+    const role = req.body.role;
+    console.log(role)
     try {
         if (role !== 'seller' && role !== 'customer') {
             return res.status(400).json({ error: 'Invalid role specified' });
@@ -45,7 +47,7 @@ router.post('/register', async (req, res) => {
         const registeredUser = await register(req, res, role);
 
         if(registeredUser) {
-            req.login(registeredUser, err => {
+            req.logIn(registeredUser, err => {
                 if (err) {
                     return res.status(500).json({ error: 'Login after registration failed' });
                 }

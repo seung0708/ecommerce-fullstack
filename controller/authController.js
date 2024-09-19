@@ -3,6 +3,7 @@ const passport = require('passport');
 const {createUser, getRole, addToUserRoles, findUserByEmail, getIdByEmail} = require('../models/userModel');
 
 const register = async(req, res, role) => {
+    console.log(req.body, role)
     const {first_name, last_name, email, password, created_at = new Date()} = req.body;
     try {
         let user;
