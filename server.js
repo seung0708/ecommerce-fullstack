@@ -1,19 +1,17 @@
 require('dotenv').config();
-const express = require('express');
-const app = express();
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const passport = require('passport');
-const pool = require('./models/database');
-const session = require('express-session');
-const PostgreSQLStore = require('connect-pg-simple')(session);
 
-const appSeller = express();
-const appCustomer = express();
-const CUSTOMER_PORT = process.env.CUSTOMER_PORT || 5000; 
-const SELLER_PORT = process.env.SELLER_PORT || 5001;
 
-//Setting up Routes
+//Setting up the Express application
+const cors = require('cors'); //import cors middleware
+const passport = require('passport'); //importing passport middleware for authentication
+const pool = require('./models/database'); //importing pool to connect to the database. 
+const session = require('express-session'); //import sessions middleware 
+const PostgreSQLStore = require('connect-pg-simple')(session); //setting up session store
+const PORT = process.env.PORT || 5000; //setting up port for customer's website
+const express = require('express'); //Importing express module
+const app = express(); //initializing app to an instance of an Express application
+
+//Setting up routes
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const productRoutes = require('./routes/products');
@@ -25,50 +23,33 @@ const categoryRoutes = require('./routes/categories');
 const dummyjsonRoutes = require('./routes/dummyjson');
 const cartItemRoutes = require('./routes/cartItems');
 
+app.use(cors());
+app.use(express.json());
 
+//Configure session
+app.use(session({
+    store: new PostgreSQLStore({
+        pool, 
+        tableName: 'session'
+    }),
+    secret: process.env.SECRET_KEY, 
+    resave: false, 
+    saveUninitialized: false, 
+    cookie: {maxAge: 1000 * 60 * 60 * 24} 
+}))
 
-const setUpApp = (app, role) => {
-    app.use(cors());
-    app.use(bodyParser.json());
-    
-    //Configure session
-    app.use(session({
-        store: new PostgreSQLStore({
-            pool, 
-            tableName: 'session'
-        }),
-        secret: process.env.SECRET_KEY, 
-        resave: false, 
-        saveUninitialized: false, 
-        cookie: {maxAge: 1000 * 60 * 60 * 24} 
-    }))
+app.use(passport.initialize());
+app.use(passport.session());
 
-    app.use(passport.initialize());
-    app.use(passport.session());
-    
-    app.use((req, res, next) => {
-        req.role = role; 
-        next();
-    })
+app.use('/auth', authRoutes);
+app.use('/users', userRoutes);
+app.use('/products', productRoutes);
+app.use('/seller', sellerRoutes);
+app.use('/carts', cartRoutes);
+app.use('/orders', orderRoutes);
+app.use('/payments', paymentRoutes);
+app.use('/categories', categoryRoutes);
+app.use('/dummyjson', dummyjsonRoutes);
+app.use('/cartItems', cartItemRoutes);
 
-    app.use('/auth', authRoutes);
-    app.use('/users', userRoutes);
-    app.use('/products', productRoutes);
-    app.use('/seller', sellerRoutes);
-    app.use('/carts', cartRoutes);
-    app.use('/orders', orderRoutes);
-    app.use('/payments', paymentRoutes);
-    app.use('/categories', categoryRoutes);
-    app.use('/dummyjson', dummyjsonRoutes);
-    app.use('/cartItems', cartItemRoutes);
-}
-
-
-
-setUpApp(appCustomer, 'customer');
-setUpApp(appSeller, 'seller');
-
-
-appCustomer.listen(CUSTOMER_PORT, () => console.log(`Server is running on http://localhost:${CUSTOMER_PORT}`))
-appSeller.listen(SELLER_PORT, () => console.log(`Server is running on http://localhost:${SELLER_PORT}`))
-
+app.listen(PORT, () => console.log(`Server is listening on port ${PORT}`))
