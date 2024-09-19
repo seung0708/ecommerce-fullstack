@@ -2,10 +2,10 @@ const express = require ('express');
 const router = express.Router();
 
 //Getting all products from dummyjson
-const fetchProductsFromDummyJson = async () => {
+const fetchProductsFromDummyJson = async (req, res) => {
     const response = await fetch('https://dummyjson.com/products')
     const products = await response.json();
-    console.log(products);
+    res.send(products);
 }
 
 //Getting all products within a category from dummyjson

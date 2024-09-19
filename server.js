@@ -24,10 +24,7 @@ const dummyjsonRoutes = require('./routes/dummyjson');
 const cartItemRoutes = require('./routes/cartItems');
 
 
-app.use(cors({
-    origin: 'http://seller.localhost',
-    credentials: true
-}));
+app.use(cors());
 app.use(express.json());
 
 //Configure session
