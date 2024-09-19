@@ -23,7 +23,11 @@ const categoryRoutes = require('./routes/categories');
 const dummyjsonRoutes = require('./routes/dummyjson');
 const cartItemRoutes = require('./routes/cartItems');
 
-app.use(cors());
+
+app.use(cors({
+    origin: 'http://seller.localhost',
+    credentials: true
+}));
 app.use(express.json());
 
 //Configure session
@@ -51,5 +55,6 @@ app.use('/payments', paymentRoutes);
 app.use('/categories', categoryRoutes);
 app.use('/dummyjson', dummyjsonRoutes);
 app.use('/cartItems', cartItemRoutes);
+
 
 app.listen(PORT, () => console.log(`Server is listening on port ${PORT}`))
