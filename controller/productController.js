@@ -1,5 +1,6 @@
 const {getAllProducts} = require('../models/productModel');
 const {fetchCategoriesById} = require('../models/categoryModel');
+
 const fetchAllProducts = async (req, res) => {
     try {
         const products = await getAllProducts();

@@ -1,19 +1,27 @@
 const {createCart, findCartByUserId} = require('../models/cartModel');
 const {addItemToCart} = require('../models/cartItemModel');
+const {updateQuantityInProducts} = require('../models/productModel');
 
 const addToCart = async (req, res) => { 
-    console.log('cartController is called', req.body)
-    const userId = req.body.user_id;
-    const {product_id, quantity} = req.body;
+    //console.log('cartController is called', req.body)
+    const {userId, productId, quantity} = req.body;
+    let cartItems
+    let cartId
     try {
-        let cartId = await findCartByUserId(userId);
-        if(!cartId) {
-            cartId = await createCart(userId);
+        const updateQuantity = await updateQuantityInProducts(productId, quantity);
+        if (updateQuantity === 0) {
+            throw new Error('Product not found or insufficient quantity');
         }
-        
-        await addItemToCart(cartId, product_id, quantity);
 
-        res.status(200).json({message: 'Item added to cart'});
+        let usersCartId = await findCartByUserId(userId);
+        if(!usersCartId) {
+            cartId = await createCart(userId);
+            cartItems = await addItemToCart(cartId, productId, quantity);
+        } else {
+            cartItems = await addItemToCart(usersCartId, productId, quantity)
+        }
+        //console.log('cartController', cart)
+        res.status(200).json({message: 'Item added to cart', cartItems});
     } catch(error) {
         console.error('Error in addItemToCart in cartController')
         res.status(500).json({error: 'Failed to add item to cart'});

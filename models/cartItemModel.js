@@ -1,11 +1,15 @@
 const pool = require('./database');
 
 const addItemToCart = async (cartId, product_id, quantity) => {
-    await pool.query(
+    console.log(cartId)
+    const result = await pool.query(
         `INSERT INTO cart_items (cart_id, product_id, quantity) 
-         VALUES ($1, $2, $3) ON CONFLICT (cart_id, product_id)  
-         DO UPDATE SET quantity = cart_items.quantity + EXCLUDED.quantity`
+         VALUES ($1, $2, $3) 
+         ON CONFLICT (cart_id, product_id)  
+         DO UPDATE SET quantity = cart_items.quantity + EXCLUDED.quantity 
+         RETURNING *`
     ,[cartId, product_id, quantity]);
+    return result.rows[0]
 }
 
 // Update the quantity of a specific cart item

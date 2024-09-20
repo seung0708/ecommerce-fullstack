@@ -6,7 +6,7 @@ const createProduct = async (name, seller_id, price, categoryId, description, qu
 
 const getAllProducts = async () => {
     try {
-        const result = await pool.query('SELECT name, price, description, images FROM products');
+        const result = await pool.query('SELECT * FROM products');
         return result.rows;
     } catch(error) {
         console.error('Error in getAllProducts controller:', error);
@@ -14,4 +14,20 @@ const getAllProducts = async () => {
     }
 }
 
-module.exports = {getAllProducts};
+const updateQuantityInProducts = async(productId, quantity) => {
+    try {
+        const result = await pool.query(
+            `UPDATE products
+             SET quantity = GREATEST(quantity - $1, 0) 
+             WHERE id = $2
+             RETURNING *`,
+            [quantity, productId]
+        )
+        return result.rows;
+        
+    } catch(error) {
+        console.error(error)
+    }
+}
+
+module.exports = {getAllProducts, updateQuantityInProducts};
