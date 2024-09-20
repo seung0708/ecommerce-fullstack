@@ -13,8 +13,12 @@ passport.use(new LocalStrategy({usernameField: 'email', passwordField: 'password
             
             const passwordMatch = await bcrypt.compare(password, user.password);
             console.log(passwordMatch)
-            if (passwordMatch) return done(null, user);
-            else return done(null, false, { message: 'Password incorrect' });
+            if (passwordMatch) {
+                const {password, ...userWithoutPassword} = user;
+                return done(null, userWithoutPassword);
+            } else {
+                return done(null, false, { message: 'Password incorrect' });
+            }
         } catch (err) {
             return done(err);
         }

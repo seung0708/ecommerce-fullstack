@@ -1,7 +1,7 @@
 const {createCart, findCartByUserId} = require('../models/cartModel');
 const {addItemToCart} = require('../models/cartItemModel');
 
-const addToCart = async (req, res) => {
+const addToCart = async (req, res) => { 
     console.log('cartController is called', req.body)
     const userId = req.body.user_id;
     const {product_id, quantity} = req.body;
