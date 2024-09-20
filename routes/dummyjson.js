@@ -14,7 +14,7 @@ const fetchProductCategory = async (req, res) => {
     const response = await fetch(`https://dummyjson.com/products/category/${category}`)
     
     const products = await response.json();
-    console.log(products.products)
+    res.send(products.products)
 }
 
 //Getting all categories from dummyjson
