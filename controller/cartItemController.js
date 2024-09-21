@@ -4,8 +4,8 @@ const {updateCartItemInDB, deleteCartItemInDB} = require('../models/cartItemMode
 const updateCartItem = async (req, res) => {
     
     const cartItemId = req.params.cartItemId;
-    const { quantity } = req.body;
- 
+    const quantity = req.body.quantity;
+    console.log(req.params, quantity)
     try {
         await updateCartItemInDB(cartItemId, quantity);
         res.status(200).json({ message: 'Item quantity updated' });
