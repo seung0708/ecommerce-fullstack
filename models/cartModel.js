@@ -13,7 +13,7 @@ const findCartByUserId = async (userId) => {
 // Get all cart items for a specific cart
 const getItemsInCart = async (cartId) => {
     const result = await pool.query(
-        `SELECT ci.product_id, ci.quantity, p.name, p.price, p.images
+        `SELECT ci.id, ci.product_id, ci.quantity, p.name, p.price, p.images
         FROM cart_items ci
         JOIN products p ON ci.product_id = p.id
         WHERE ci.cart_id = $1`,
