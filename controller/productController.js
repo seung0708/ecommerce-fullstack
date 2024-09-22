@@ -14,7 +14,7 @@ const fetchAllProducts = async (req, res) => {
 const addProduct = async (req, res) => {
     const {name, seller_id, price, description, quantity, images, categoryName} = req.body; 
     const categoryId = await fetchCategoriesById(categoryName);
-    console.log(categoryId);
+
     try {
         const product = await createProduct(name, seller_id, price, categoryId, description, quantity, images);
         // if (product) {
