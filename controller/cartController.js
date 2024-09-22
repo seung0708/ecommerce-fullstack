@@ -3,7 +3,7 @@ const {addItemToCart} = require('../models/cartItemModel');
 const {updateQuantityInProducts} = require('../models/productModel');
 
 const addToCart = async (req, res) => { 
-    //console.log('cartController is called', req.body)
+    console.log('cartController is called', req.body)
     const {userId, productId, quantity} = req.body;
     let cartId
     try {
@@ -13,6 +13,7 @@ const addToCart = async (req, res) => {
         }
 
         let usersCartId = await findCartByUserId(userId);
+        console.log(usersCartId)
         if(!usersCartId) {
             cartId = await createCart(userId);
             await addItemToCart(cartId, productId, quantity);

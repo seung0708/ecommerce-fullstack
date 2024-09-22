@@ -35,11 +35,9 @@ const login = (req, res, next) => {
         if (err) return next(err)
         if(!user) return res.status(401).json({message: 'Login failed'});
         req.logIn(user, (err) => {
-            if(!err) {
-                res.status(200).json({messge: 'Logged in successfully', user})
-            } else {
-                return next(err);
-            }
+            if(err) return next(err);
+
+            res.status(200).json({message: 'Logged in successfully', user});
         })
     })(req, res, next);
 

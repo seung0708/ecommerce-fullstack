@@ -24,20 +24,25 @@ const dummyjsonRoutes = require('./routes/dummyjson');
 const cartItemRoutes = require('./routes/cartItems');
 
 
-app.use(cors());
+app.use(cors({
+    origin: ['http://localhost:3000', 'http://seller.localhost:3000'],
+    credentials: true
+}));
 app.use(express.json());
 
 //Configure session
 app.use(session({
-    store: new PostgreSQLStore({
-        pool, 
-        tableName: 'session'
-    }),
-    secret: process.env.SECRET_KEY, 
-    resave: false, 
-    saveUninitialized: false, 
-    cookie: {maxAge: 1000 * 60 * 60 * 24} 
-}))
+    store: new PostgreSQLStore({ pool, tableName: 'session' }),
+    secret: process.env.SECRET_KEY,
+    resave: false,          // Do not save session if not modified
+    saveUninitialized: false, // Do not create sessions unless data is added to the session
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24, // 1 day
+        httpOnly: true,
+        secure: false, // Set to true in production (HTTPS)
+        sameSite: 'lax'
+    }
+}));
 
 app.use(passport.initialize());
 app.use(passport.session());

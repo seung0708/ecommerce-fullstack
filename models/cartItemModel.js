@@ -13,7 +13,6 @@ const addItemToCart = async (cartId, product_id, quantity) => {
 
 // Update the quantity of a specific cart item
 const updateCartItemInDB = async (cartItemId, quantity) => {
-    console.log(cartItemId, quantity)
     await pool.query(
         'UPDATE cart_items SET quantity = $1 WHERE id = $2',
         [quantity, cartItemId]
