@@ -1,5 +1,5 @@
 const {findUserByEmail, findUserById} = require ('../models/userModel');
-const {register, login} = require('../controller/authController');
+const {register, login, logout} = require('../controller/authController');
 const express = require ('express');
 const router = express.Router();
 const passport = require('passport');
@@ -34,19 +34,6 @@ passport.deserializeUser(async (id, done) => {
 
 //router.get('/', (req, res) => res.send('Auth route is working'));
 
-
-router.post('/logout', (req, res, next) => {
-    req.logout(err => {
-        if(err) return next(err)
-        
-    });
-    req.session.destroy(err => {
-        if(err) return next(err)
-    })
-    res.clearCookie('connect.sid')
-    res.status(200).json({message: 'Logged out successfully'});
-})
-
 router.post('/register', async (req, res) => {
     const role = req.body.role;
     try {
@@ -72,5 +59,7 @@ router.post('/register', async (req, res) => {
 
 router.post('/login', login);
 
+router.post('/logout', logout)
 
-module.exports =    router
+
+module.exports =  router

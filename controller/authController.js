@@ -43,8 +43,21 @@ const login = (req, res, next) => {
 
 } 
 
+const logout = (req, res, next) => {
+    req.logout(err => {
+        if(err) return next(err)
+        
+    });
+    req.session.destroy(err => {
+        if(err) return next(err)
+        res.clearCookie('connect.sid')
+        res.status(200).json({message: 'Logged out successfully'})
+    })
+}
+
 module.exports = {
     register,
-    login
+    login,
+    logout
 }
  
