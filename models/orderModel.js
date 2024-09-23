@@ -24,7 +24,7 @@ const getOrderTotal = async (userId) => {
 }
 
 const getOrderByIdInDB = async(orderId) => {
-    const result = await pool.query('SELECT * FROM orders WHERE id = $1', [orderId]);
+    const result = await pool.query('SELECT id, cart_id, total_amount, status FROM orders WHERE id = $1', [orderId]);
     //console.log(result)
     return result.rows[0];
 }

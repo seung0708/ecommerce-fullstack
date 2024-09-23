@@ -15,9 +15,10 @@ const createOrder = async (req, res) => {
         }
         
         const orderItems = await getOrderItems(orderId, cartId)
+        const order = await getOrderByIdInDB(orderId)
         console.log(orderItems)
         if(orderItems) {
-            res.status(201).json({ message: 'Order created successfully', orderItems });
+            res.status(201).json([orderItems, order]);
         } else {
             res.status(400).json({ error: 'Failed to create order' });
         }
