@@ -16,14 +16,13 @@ const getAllProducts = async () => {
 
 const updateQuantityInProducts = async(productId, quantity) => {
     try {
-        const result = await pool.query(
+        await pool.query(
             `UPDATE products
              SET quantity = GREATEST(quantity - $1, 0) 
              WHERE id = $2
-             RETURNING *`,
+             `,
             [quantity, productId]
         )
-        return result.rows;
         
     } catch(error) {
         console.error(error)

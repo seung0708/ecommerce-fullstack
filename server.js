@@ -28,6 +28,7 @@ app.use(cors({
     origin: ['http://localhost:3000', 'http://seller.localhost:3000'],
     credentials: true
 }));
+
 app.use(express.json());
 
 //Configure session

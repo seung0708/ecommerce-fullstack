@@ -23,6 +23,14 @@ const getOrderTotal = async (userId) => {
     return result.rows[0].total || 0; 
 }
 
+const updateOrderStatus = async (orderId, status) => {
+    await pool.query(`
+        UPDATE orders 
+        SET status = $2
+        WHERE id = $1
+        `,[orderId, status])
+}
+
 const getOrderByIdInDB = async(orderId) => {
     const result = await pool.query('SELECT id, cart_id, total_amount, status FROM orders WHERE id = $1', [orderId]);
     //console.log(result)
@@ -32,5 +40,6 @@ const getOrderByIdInDB = async(orderId) => {
 module.exports = {
     createOrderInDB,
     getOrderByIdInDB, 
-    getOrderTotal
+    getOrderTotal,
+    updateOrderStatus
 }

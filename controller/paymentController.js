@@ -1,8 +1,10 @@
 require('dotenv').config();
 const stripe = require('stripe')(process.env.STRIPE_API_KEY);
-const {getOrderByIdInDB} = require('../models/orderModel');
+const { deleteCart } = require('../models/cartModel');
+const {getOrderByIdInDB, updateOrderStatus} = require('../models/orderModel');
 const { createPaymentMethod } = require('../models/paymentMethdsModel');
-const {createPayment} = require('../models/paymentModel')
+const {createPayment} = require('../models/paymentModel');
+const { updateQuantityInProducts } = require('../models/productModel');
 
 const createPaymentForOrder = async (req, res)=> {
     //console.log(req.body)
@@ -32,4 +34,55 @@ const createPaymentForOrder = async (req, res)=> {
     }
 }
 
-module.exports = {createPaymentForOrder} 
+const createStripeCheckout = async (req, res) => {
+    const {userId, currentOrder, orderItems, methodType} = req.body; 
+    console.log(req.body)
+    // const line_items = orderItems.map(item => (
+    //     {
+    //         price_data: {
+    //             currency: 'usd',
+    //             product_data: {
+    //                 name: item.name,
+    //             },
+    //         unit_amount: Math.round(item.price * 100), 
+    //         }, 
+    //         quantity: item.quantity
+    //     }
+    // ))
+    const paymentMethodId = await createPaymentMethod(methodType);
+    
+        const payment = await createPayment(userId, currentOrder.id, paymentMethodId, currentOrder.total_amount, 'completed');
+        console.log(payment)
+
+    // try {
+        
+    //     const paymentMethodId = await createPaymentMethod(methodType);
+    
+    //     const payment = await createPayment(userId, currentOrder.id, paymentMethodId, currentOrder.total_amount, 'completed');
+    //     console.log(payment)
+    //     if(payment) {
+    //         await updateOrderStatus(currentOrder.id, 'completed');
+    //         await deleteCart(currentOrder.cart_id);
+    //         for (const item of orderItems) {
+    //             await updateQuantityInProducts(item.product_id, item.quantity);
+    //         }
+    //     }
+
+    //     const session = await stripe.checkout.sessions.create({
+    //         line_items: line_items, 
+    //         mode: 'payment',
+    //         success_url: 'http://localhost:3000/success',
+    //         cancel_url: 'http://localhost:3000/cancel'
+    //     })
+
+    //     console.log(session);
+    //     res.json({url: session.url});
+    // } catch(error) {
+    //     console.error(error)
+    // }
+
+}
+
+
+
+module.exports = {createPaymentForOrder, createStripeCheckout} 

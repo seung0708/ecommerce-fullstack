@@ -23,4 +23,6 @@ const getOrderItems = async(orderId) => {
     return result.rows
 }
 
+
+
 module.exports = {addOrderItems, getOrderItems};

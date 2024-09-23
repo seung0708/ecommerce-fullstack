@@ -1,8 +1,8 @@
 const pool = require('./database');
 
-const createPaymentMethod = async(methodType, providerDetails) => {
+const createPaymentMethod = async(methodType) => {
     const result = await pool.query(
-        `INSERT INTO payment_methods (method_type, provider_details) VALUES ($1, $2) RETURNING id`,[methodType, providerDetails]
+        `INSERT INTO payment_methods (method_type) VALUES ($1) RETURNING id`,[methodType]
     )
     //console.log(result)
     return result.rows[0].id;
