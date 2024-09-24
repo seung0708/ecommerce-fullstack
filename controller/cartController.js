@@ -21,8 +21,7 @@ const addToCart = async (req, res) => {
         } else {
             cartItems = await addItemToCart(usersCartId, productId, quantity)
         }
-        const cartId = await findCartByUserId(userId)
-        const cart = await getItemsInCart(cartId)
+        const cart = await getItemsInCart(usersCartId)
         console.log('cartController',cart)
         if(cart) {
             res.status(200).json(cart);
@@ -37,6 +36,7 @@ const addToCart = async (req, res) => {
 const getCartByUserId = async(req, res) => {
     const userId = req.params.userId;
     try {
+
         const cartId = await findCartByUserId(userId);
         if(!cartId) {
             return res.status(404).json({message: 'No cart found for this user'});

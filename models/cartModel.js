@@ -24,7 +24,6 @@ const getItemsInCart = async (cartId) => {
 
 const deleteCart = async (cartId) => {
     await pool.query('DELETE FROM carts WHERE id = $1',[cartId]);
-    await pool.query('DELETE FROM cart_items WHERE cart_id = $1', [cartId]);
 }
 
 module.exports = {

@@ -1,12 +1,12 @@
 const pool = require('./database');
 
-const createUser = async(first_name, last_name, email, hashedPassword, created_at) => {
-    return pool.query('INSERT INTO users (first_name, last_name, email, password, created_at) VALUES($1, $2, $3, $4, $5) RETURNING *', [first_name, last_name, email, hashedPassword, created_at]);
-    
+const createUser = async(firstName, lastName, email, hashedPassword, created_at) => {
+    const result = await pool.query('INSERT INTO users (first_name, last_name, email, password, created_at) VALUES($1, $2, $3, $4, $5) RETURNING *', [firstName, lastName, email, hashedPassword, created_at]);
+    return result.rows[0]
 }
 
 const getRole = async (role) => {
-    return pool.query('SELECT id FROM roles WHERE name =$1', [role]);
+    return await pool.query('SELECT id FROM roles WHERE name =$1', [role]);
 }
 
 const findUserByEmail = async (email) => {
@@ -20,7 +20,7 @@ async function findUserById(id) {
   }
 
 const addToUserRoles = async (userId, roleId) => {
-    return pool.query('INSERT INTO user_roles (user_id, role_id) VALUES($1, $2)', [userId, roleId]);
+    return await pool.query('INSERT INTO user_roles (user_id, role_id) VALUES($1, $2)', [userId, roleId]);
 }
 
 

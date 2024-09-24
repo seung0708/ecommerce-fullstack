@@ -37,49 +37,45 @@ const createPaymentForOrder = async (req, res)=> {
 const createStripeCheckout = async (req, res) => {
     const {userId, currentOrder, orderItems, methodType} = req.body; 
     console.log(req.body)
-    // const line_items = orderItems.map(item => (
-    //     {
-    //         price_data: {
-    //             currency: 'usd',
-    //             product_data: {
-    //                 name: item.name,
-    //             },
-    //         unit_amount: Math.round(item.price * 100), 
-    //         }, 
-    //         quantity: item.quantity
-    //     }
-    // ))
-    const paymentMethodId = await createPaymentMethod(methodType);
+    const line_items = orderItems.map(item => (
+        {
+            price_data: {
+                currency: 'usd',
+                product_data: {
+                    name: item.name,
+                },
+            unit_amount: Math.round(item.price * 100), 
+            }, 
+            quantity: item.quantity
+        }
+    ))
+
+    try {
+        
+        const paymentMethodId = await createPaymentMethod(methodType);
     
         const payment = await createPayment(userId, currentOrder.id, paymentMethodId, currentOrder.total_amount, 'completed');
         console.log(payment)
+        if(payment) {
+            await updateOrderStatus(currentOrder.id, 'completed');
+            await deleteCart(currentOrder.cart_id);
+            for (const item of orderItems) {
+                await updateQuantityInProducts(item.product_id, item.quantity);
+            }
+        }
 
-    // try {
-        
-    //     const paymentMethodId = await createPaymentMethod(methodType);
-    
-    //     const payment = await createPayment(userId, currentOrder.id, paymentMethodId, currentOrder.total_amount, 'completed');
-    //     console.log(payment)
-    //     if(payment) {
-    //         await updateOrderStatus(currentOrder.id, 'completed');
-    //         await deleteCart(currentOrder.cart_id);
-    //         for (const item of orderItems) {
-    //             await updateQuantityInProducts(item.product_id, item.quantity);
-    //         }
-    //     }
+        const session = await stripe.checkout.sessions.create({
+            line_items: line_items, 
+            mode: 'payment',
+            success_url: 'http://localhost:3000/success',
+            cancel_url: 'http://localhost:3000/cancel'
+        })
 
-    //     const session = await stripe.checkout.sessions.create({
-    //         line_items: line_items, 
-    //         mode: 'payment',
-    //         success_url: 'http://localhost:3000/success',
-    //         cancel_url: 'http://localhost:3000/cancel'
-    //     })
-
-    //     console.log(session);
-    //     res.json({url: session.url});
-    // } catch(error) {
-    //     console.error(error)
-    // }
+        console.log(session);
+        res.json({url: session.url});
+    } catch(error) {
+        console.error(error)
+    }
 
 }
 

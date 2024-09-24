@@ -41,16 +41,7 @@ router.post('/register', async (req, res) => {
             return res.status(400).json({ error: 'Invalid role specified' });
         }
 
-        const registeredUser = await register(req, res, role);
-
-        if(registeredUser) {
-            req.logIn(registeredUser, err => {
-                if (err) {
-                    return res.status(500).json({ error: 'Login after registration failed' });
-                }
-                return res.status(201).json({ msg: 'Register successful', role });
-            });
-        } 
+        await register(req, res, role);
     } catch(err) {
         console.log(err)
         return res.status(500).json({error: 'Registration failed'})

@@ -1,32 +1,34 @@
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
-const {createUser, getRole, addToUserRoles, findUserByEmail, getIdByEmail} = require('../models/userModel');
+const {createUser, getRole, addToUserRoles, findUserByEmail} = require('../models/userModel');
 
 const register = async(req, res, role) => {
-    const {first_name, last_name, email, password, created_at = new Date()} = req.body;
+    const {firstName, lastName, email, password, created_at = new Date()} = req.body;
+    //console.log(req.body)
+
     try {
         let user;
         let userId;
         let userExists = await findUserByEmail(email);
         //if user doesn't exist
-        if(!userExists?.email) {
+        if(!userExists) {
             const hashedPassword = await bcrypt.hash(password, 10);
-            user = await createUser(first_name, last_name, email, hashedPassword, created_at);
-            userId = user.rows[0].id;
+            user = await createUser(firstName, lastName, email, hashedPassword, created_at);
+            userId = user.id;
         } else {
-            user = await getIdByEmail(email)
-            userId = user.rows[0].id;
+            res.status(401).json({message: 'User is already registered'})
         }
+        console.log(user, userId)
         const roleName = await getRole(role);
         const roleId = roleName.rows[0].id; 
 
         if (userId && roleId) {
             await addToUserRoles(userId, roleId)
         } 
-        return user;
+        res.status(200).json(user);
        
     } catch(error) {
-        res.status(500).json({error: 'Error registering user'});
+         res.status(500).json({error: 'Error registering user'});
     }
 }
  
@@ -38,7 +40,7 @@ const login = (req, res, next) => {
         req.logIn(user, (err) => {
             if(err) return next(err);
 
-            res.status(200).json({message: 'Logged in successfully', user});
+            res.status(200).json(user);
         })
     })(req, res, next);
 
